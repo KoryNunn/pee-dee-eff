@@ -13,13 +13,20 @@
     "phantom": "^3.0.3",
     "righto": "^2.2.1",
     "unzip": "^0.1.11",
-    "uuid": "^3.0.0"
-  },
-  "devDependencies": {
+    "uuid": "^3.0.0",
     "rimraf": "^2.5.4"
   },
+  "devDependencies": {},
   "directories": {
     "test": "test"
   },
-  "description": ""
+  "description": "Make a pdf from a .zip'd static site.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KoryNunn/pee-dee-eff.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KoryNunn/pee-dee-eff/issues"
+  },
+  "homepage": "https://github.com/KoryNunn/pee-dee-eff#readme"
 }
