@@ -1,0 +1,25 @@
+{
+  "name": "pee-dee-eff",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test",
+    "buildTestZip": "zip -r test/testData/testSite1.zip test/testData/testSite1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "find-shallow-file": "^1.0.0",
+    "phantom": "^3.0.3",
+    "righto": "^2.2.1",
+    "unzip": "^0.1.11",
+    "uuid": "^3.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.5.4"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "description": ""
+}
