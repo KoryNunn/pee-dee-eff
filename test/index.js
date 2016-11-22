@@ -12,9 +12,13 @@ var options = {
     };
 
 render(fs.createReadStream(testSite1Path), options, function(error, resultPath){
+    if(error){
+        console.log(error);
+        return;
+    }
     exec('google-chrome "' + resultPath + '"');
 
     setTimeout(function(){
         rm(resultPath, function(){});
-    }, 500);
+    }, 3000);
 });

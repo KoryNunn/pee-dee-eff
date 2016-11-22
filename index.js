@@ -59,6 +59,9 @@ function load(zipStream, options, callback){
 
     zipStream
         .pipe(unzip.Extract({ path: path }))
+        .on('error', function(error){
+            callback(new Error('Error extracting file'));
+        })
         .on('close', function(){
             callback(null, path);
         });
@@ -66,7 +69,7 @@ function load(zipStream, options, callback){
 
 module.exports = function(zipStream, options, callback){
     if(!options || ! options.tempPath){
-        throw "Invalid options. pee-dee-eff requires a temporary directory to store inflated data and result pdfs in";
+        throw 'Invalid options. pee-dee-eff requires a temporary directory to store inflated data and result pdfs in';
     }
 
     var inflatedPath = righto(load, zipStream, options),

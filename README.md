@@ -11,10 +11,11 @@ Handy for printing generated documents etc.
 var zipStream = fs.createReadStream('my/cool/static/site.zip');
 
 render(zipStream, {
-        tempPath: '/temp/or/whatevs'
+        tempPath: '/temp/or/whatevs',
+        waitTime: 500 // default
     },
     function(error, resultPath){
-        // error or a path to the result .pdf
+        // error or a path to the result .pdf file
     }
 );
 ```
