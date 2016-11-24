@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    unzip = require('unzip'),
+    unzip = require('unzip2'),
     uuid = require('uuid'),
     phantom = require('phantom'),
     righto = require('righto'),
