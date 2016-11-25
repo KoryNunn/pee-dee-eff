@@ -1,4 +1,5 @@
 var fs = require('fs'),
+    path = require('path'),
     unzip = require('unzip'),
     uuid = require('uuid'),
     phantom = require('phantom'),
@@ -21,14 +22,14 @@ function getStatus(phantomInstance, status, options, callback){
     }
 }
 
-function savePDF(phantomInstance, page, path, callback){
-    var filename = path + '.pdf';
+function savePDF(phantomInstance, page, documentPath, callback){
+    var filename = documentPath + '.pdf';
     var rendered = righto.from(page.render(filename));
 
     rendered(function(error){
         callback(null, filename);
         phantomInstance.exit();
-        rm(path, function(){});
+        rm(documentPath, function(){});
     });
 }
 
@@ -40,30 +41,31 @@ function getShallowestHTMLUri(shallowestHTMLFilePath, callback){
     callback(null, 'file://' + shallowestHTMLFilePath);
 }
 
-function render(path, options, callback){
-    var shallowestHTMLFile = righto(findShallowestFile, path, /.*\.html/, {maxDepth: 4}),
+function render(documentPath, options, callback){
+    var shallowestHTMLFile = righto(findShallowestFile, documentPath, /.*\.html/, {maxDepth: 4}),
         uri = righto(getShallowestHTMLUri, shallowestHTMLFile);
 
     var phantomInstance = righto.from(phantom.create),
         page = phantomInstance.get(instance => instance.createPage()),
-        status = righto(openUrl, page, uri),
+        setSettings = page.get(page => righto.from(page.property('paperSize', options.page))),
+        status = righto(openUrl, page, uri, righto.after(setSettings)),
         loaded = righto(getStatus, phantomInstance, status, options),
-        result = righto(savePDF, phantomInstance, page, path, righto.after(loaded));
+        result = righto(savePDF, phantomInstance, page, documentPath, righto.after(loaded));
 
     result(callback);
 }
 
 function load(zipStream, options, callback){
     var id = uuid(),
-        path = options.tempPath + id;
+        documentPath = path.join(options.tempPath, id);
 
     zipStream
-        .pipe(unzip.Extract({ path: path }))
+        .pipe(unzip.Extract({ path: documentPath }))
         .on('error', function(error){
             callback(new Error('Error extracting file'));
         })
         .on('close', function(){
-            callback(null, path);
+            callback(null, documentPath);
         });
 }
 

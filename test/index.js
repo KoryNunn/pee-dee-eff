@@ -8,7 +8,11 @@ var tempPath = __dirname + '/temp/';
 
 var options = {
         waitTime: 100,
-        tempPath
+        tempPath,
+        page:{
+            format: 'A4',
+            orientation: 'portrait'
+        }
     };
 
 render(fs.createReadStream(testSite1Path), options, function(error, resultPath){
