@@ -1,6 +1,6 @@
 var fs = require('fs'),
     path = require('path'),
-    unzip = require('unzip'),
+    unzip = require('unzip2'),
     uuid = require('uuid'),
     phantom = require('phantom'),
     righto = require('righto'),
