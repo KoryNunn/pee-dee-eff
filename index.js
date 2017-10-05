@@ -2,35 +2,29 @@ var fs = require('fs'),
     path = require('path'),
     unzip = require('unzip2'),
     uuid = require('uuid'),
-    phantom = require('phantom'),
+    puppeteer = require('puppeteer'),
     righto = require('righto'),
     rm = require('rimraf'),
     findShallowestFile = require('find-shallow-file');
 
 function openUrl(page, uri, callback){
-    var opened = righto.from(page.open(uri));
+    var opened = righto.from(page.goto(uri, { waitUntil: 'networkidle' }));
 
     opened(callback);
 }
 
-function getStatus(phantomInstance, status, options, callback){
-    if (status !== 'success') {
-        phantomInstance.exit();
-        callback('Failed to load page');
-    } else {
-        setTimeout(callback, 'waitTime' in options ? options.waitTime : 500);
-    }
-}
-
-function savePDF(phantomInstance, page, documentPath, callback){
+function savePDF(page, documentPath, options, callback){
+    var pageOptions = options.page || { format: 'A4' };
     var filename = documentPath + '.pdf';
-    var rendered = righto.from(page.render(filename));
 
-    rendered(function(error){
-        callback(null, filename);
-        phantomInstance.exit();
-        rm(documentPath, function(){});
-    });
+    pageOptions.path = filename;
+    
+    var emulationSet = righto.from(page.emulateMedia('print'));
+    var rendered = righto.from(page.pdf(pageOptions));
+
+    var result = righto.mate(filename, righto.after(rendered));
+
+    result(callback);
 }
 
 function getShallowestHTMLUri(shallowestHTMLFilePath, callback){
@@ -41,16 +35,23 @@ function getShallowestHTMLUri(shallowestHTMLFilePath, callback){
     callback(null, 'file://' + shallowestHTMLFilePath);
 }
 
+function closeInstance(browserInstance, callback){
+    var closed = righto.from(browserInstance.close());
+
+    closed(callback);
+}
+
 function render(documentPath, options, callback){
     var shallowestHTMLFile = righto(findShallowestFile, documentPath, /.*\.html/, {maxDepth: 4}),
         uri = righto(getShallowestHTMLUri, shallowestHTMLFile);
 
-    var phantomInstance = righto.from(phantom.create),
-        page = phantomInstance.get(instance => instance.createPage()),
-        setSettings = page.get(page => righto.from(page.property('paperSize', options.page))),
-        status = righto(openUrl, page, uri, righto.after(setSettings)),
-        loaded = righto(getStatus, phantomInstance, status, options),
-        result = righto(savePDF, phantomInstance, page, documentPath, righto.after(loaded));
+    var browserInstance = righto.from(puppeteer.launch),
+        page = browserInstance.get(instance => instance.newPage()),
+        loaded = righto(openUrl, page, uri),
+        pdfPath = righto(savePDF, page, documentPath, options, righto.after(loaded)),
+        instanceClosed = righto(closeInstance, browserInstance, righto.after(pdfPath)),
+        tempFilesRemoved = righto(rm, documentPath, righto.after(pdfPath)),
+        result = righto.mate(pdfPath, righto.after(tempFilesRemoved, instanceClosed));
 
     result(callback);
 }

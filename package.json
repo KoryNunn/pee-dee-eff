@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "find-shallow-file": "^1.0.0",
-    "phantom": "^3.0.3",
+    "puppeteer": "^0.11.0",
     "righto": "^2.2.1",
     "rimraf": "^2.5.4",
     "unzip2": "^0.2.5",

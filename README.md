@@ -14,8 +14,9 @@ var zipStream = fs.createReadStream('my/cool/static/site.zip');
 render(zipStream, {
         tempPath: '/temp/or/whatevs',
         waitTime: 500, // default,
-        page: {
-            // phantom page settings
+        page: { // puppeteer page.pdf options
+            format: 'A4'
+            ...
         }
     },
     function(error, resultPath){
