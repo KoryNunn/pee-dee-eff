@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "node test",
-    "buildTestZip": "zip -r test/testData/testSite1.zip test/testData/testSite1"
+    "buildTestZip": "zip -r test/testData/testSite1.zip test/testData/testSite1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "",
   "license": "ISC",
@@ -14,7 +16,8 @@
     "righto": "^2.2.1",
     "rimraf": "^2.5.4",
     "unzip2": "^0.2.5",
-    "uuid": "^3.0.0"
+    "uuid": "^3.0.0",
+    "snyk": "^1.39.0"
   },
   "devDependencies": {},
   "directories": {
@@ -28,5 +31,6 @@
   "bugs": {
     "url": "https://github.com/KoryNunn/pee-dee-eff/issues"
   },
-  "homepage": "https://github.com/KoryNunn/pee-dee-eff#readme"
+  "homepage": "https://github.com/KoryNunn/pee-dee-eff#readme",
+  "snyk": true
 }
