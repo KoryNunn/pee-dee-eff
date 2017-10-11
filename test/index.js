@@ -1,8 +1,9 @@
-var render = require('../'),
-    fs = require('fs'),
-    rm = require('rimraf'),
-    testSite1Path = __dirname + '/testData/testSite1.zip',
-    exec = require('child_process').exec;
+var render = require('../');
+var test = require('tape');
+var fs = require('fs');
+var rm = require('rimraf');
+var testSite1Path = __dirname + '/testData/testSite1.zip';
+var exec = require('child_process').exec;
 
 var tempPath = __dirname + '/temp/';
 
@@ -15,14 +16,31 @@ var options = {
         }
     };
 
-render(fs.createReadStream(testSite1Path), options, function(error, resultPath){
-    if(error){
-        console.log(error);
-        return;
-    }
-    exec('google-chrome "' + resultPath + '"');
+test('render valid zip', function(t){
+    t.plan(1);
 
-    setTimeout(function(){
-        rm(resultPath, function(){});
-    }, 3000);
+    render(fs.createReadStream(testSite1Path), options, function(error, resultPath){
+        if(error){
+            console.log(error);
+            return;
+        }
+        exec('google-chrome "' + resultPath + '"');
+
+        t.pass();
+
+        setTimeout(function(){
+            rm(resultPath, function(){});
+        }, 3000);
+    });
+
+});
+
+test('render invalid zip', function(t){
+
+    t.plan(1);
+
+    render(fs.createReadStream(__dirname + '/index.js'), options, function(error, resultPath){
+        t.ok(error);
+    });
+
 });

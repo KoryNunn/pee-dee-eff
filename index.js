@@ -1,6 +1,7 @@
 var fs = require('fs'),
+    fstream = require('fstream'),
     path = require('path'),
-    unzip = require('unzip2'),
+    unzip = require('unzipper'),
     uuid = require('uuid'),
     puppeteer = require('puppeteer'),
     righto = require('righto'),
@@ -57,16 +58,44 @@ function render(documentPath, options, callback){
 }
 
 function load(zipStream, options, callback){
-    var id = uuid(),
-        documentPath = path.join(options.tempPath, id);
+    var id = uuid();
+    var documentPath = path.join(options.tempPath, id);
+    var filesWriting = 0;
+    var closed = false;
+    var hasErrored = false;
+
+    function checkComplete(){
+        if(!hasErrored && closed && !filesWriting){
+            callback(null, documentPath);
+        }
+    }
 
     zipStream
-        .pipe(unzip.Extract({ path: documentPath }))
+        .pipe(unzip.Parse({ path: documentPath }))
+        .on('entry', function(entry){
+            if (entry.type == 'Directory'){
+                return;
+            }
+            filesWriting++;
+            entry.pipe(fstream.Writer({
+              path: path.join(documentPath, entry.path)
+            }))
+            .on('error',function(error) {
+                hasErrored = true;
+              self.emit('error', error);
+            })
+            .on('close', function(){
+                filesWriting--;
+                checkComplete();
+            });
+        })
         .on('error', function(error){
+            hasErrored = true;
             callback(new Error('Error extracting file'));
         })
         .on('close', function(){
-            callback(null, documentPath);
+            closed = true;
+            checkComplete();
         });
 }
 
