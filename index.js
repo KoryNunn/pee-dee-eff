@@ -46,7 +46,7 @@ function render(documentPath, options, callback){
     var shallowestHTMLFile = righto(findShallowestFile, documentPath, /.*\.html/, {maxDepth: 4}),
         uri = righto(getShallowestHTMLUri, shallowestHTMLFile);
 
-    var browserInstance = righto.from(puppeteer.launch),
+    var browserInstance = righto.from(puppeteer.launch, {args: ['--no-sandbox', '--disable-setuid-sandbox']}),
         page = browserInstance.get(instance => instance.newPage()),
         loaded = righto(openUrl, page, uri),
         pdfPath = righto(savePDF, page, documentPath, options, righto.after(loaded)),
@@ -82,7 +82,7 @@ function load(zipStream, options, callback){
             }))
             .on('error',function(error) {
                 hasErrored = true;
-              self.emit('error', error);
+                callback(new Error('Error writing file: ' + String(error)));
             })
             .on('close', function(){
                 filesWriting--;
@@ -91,7 +91,7 @@ function load(zipStream, options, callback){
         })
         .on('error', function(error){
             hasErrored = true;
-            callback(new Error('Error extracting file'));
+            callback(new Error('Error extracting file: ' + String(error)));
         })
         .on('close', function(){
             closed = true;
