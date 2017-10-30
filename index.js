@@ -46,7 +46,15 @@ function render(documentPath, options, callback){
     var shallowestHTMLFile = righto(findShallowestFile, documentPath, /.*\.html/, {maxDepth: 4}),
         uri = righto(getShallowestHTMLUri, shallowestHTMLFile);
 
-    var browserInstance = righto.from(puppeteer.launch, {args: ['--no-sandbox', '--disable-setuid-sandbox']}),
+    var launchOptions = {
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        };
+
+    if(options.executablePath){
+        launchOptions.executablePath = opened.executablePath;
+    }
+
+    var browserInstance = righto.from(puppeteer.launch, launchOptions),
         page = browserInstance.get(instance => instance.newPage()),
         loaded = righto(openUrl, page, uri),
         pdfPath = righto(savePDF, page, documentPath, options, righto.after(loaded)),
