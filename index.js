@@ -51,7 +51,7 @@ function render(documentPath, options, callback){
         };
 
     if(options.executablePath){
-        launchOptions.executablePath = opened.executablePath;
+        launchOptions.executablePath = options.executablePath;
     }
 
     var browserInstance = righto.from(puppeteer.launch, launchOptions),
