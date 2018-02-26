@@ -8,6 +8,7 @@ var exec = require('child_process').exec;
 var tempPath = __dirname + '/temp/';
 
 var options = {
+        ignoreHTTPSErrors: true,
         waitTime: 100,
         tempPath,
         page:{

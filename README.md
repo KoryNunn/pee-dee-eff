@@ -30,7 +30,8 @@ render(zipStream, {
 ```javascript
 
 render(zipStream, {
-        executablePath: '/path/to/Chrome'
+        executablePath: '/path/to/Chrome',
+        ignoreHTTPSErrors: (default false),
         ...
     },
     function(error, resultPath){

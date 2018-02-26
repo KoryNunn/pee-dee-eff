@@ -19,7 +19,7 @@ function savePDF(page, documentPath, options, callback){
     var filename = documentPath + '.pdf';
 
     pageOptions.path = filename;
-    
+
     var emulationSet = righto.from(page.emulateMedia('print'));
     var rendered = righto.from(page.pdf(pageOptions));
 
@@ -52,6 +52,10 @@ function render(documentPath, options, callback){
 
     if(options.executablePath){
         launchOptions.executablePath = options.executablePath;
+    }
+
+    if(options.ignoreHTTPSErrors){
+        launchOptions.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
     }
 
     var browserInstance = righto.from(puppeteer.launch, launchOptions),
@@ -108,7 +112,7 @@ function load(zipStream, options, callback){
 }
 
 module.exports = function(zipStream, options, callback){
-    if(!options || ! options.tempPath){
+    if(!options || !options.tempPath){
         throw 'Invalid options. pee-dee-eff requires a temporary directory to store inflated data and result pdfs in';
     }
 
