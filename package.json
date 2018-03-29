@@ -11,8 +11,8 @@
   "dependencies": {
     "find-shallow-file": "^1.0.0",
     "fstream": "^1.0.11",
-    "puppeteer": "^0.11.0",
-    "righto": "^2.2.1",
+    "puppeteer": "^1.2.0",
+    "righto": "^5.0.0",
     "rimraf": "^2.5.4",
     "unzipper": "^0.8.9",
     "uuid": "^3.0.0"

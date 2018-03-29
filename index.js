@@ -9,7 +9,7 @@ var fs = require('fs'),
     findShallowestFile = require('find-shallow-file');
 
 function openUrl(page, uri, callback){
-    var opened = righto.from(page.goto(uri, { waitUntil: 'networkidle' }));
+    var opened = righto.from(page.goto(uri, { waitUntil: 'networkidle2' }));
 
     opened(callback);
 }
@@ -58,7 +58,7 @@ function render(documentPath, options, callback){
         launchOptions.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
     }
 
-    var browserInstance = righto.from(puppeteer.launch, launchOptions),
+    var browserInstance = righto.sync(puppeteer.launch, launchOptions),
         page = browserInstance.get(instance => instance.newPage()),
         loaded = righto(openUrl, page, uri),
         pdfPath = righto(savePDF, page, documentPath, options, righto.after(loaded)),
