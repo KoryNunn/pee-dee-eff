@@ -8,6 +8,7 @@ var fs = require('fs'),
     rm = require('rimraf'),
     findShallowestFile = require('find-shallow-file');
 
+
 function openUrl(page, uri, callback){
     var opened = righto.from(page.goto(uri, { waitUntil: 'networkidle2' }));
 
@@ -47,7 +48,7 @@ function render(documentPath, options, callback){
         uri = righto(getShallowestHTMLUri, shallowestHTMLFile);
 
     var launchOptions = {
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: ['--no-sandbox', '--disable-setuid-sandbox'].concat(options.args || [])
         };
 
     if(options.executablePath){
