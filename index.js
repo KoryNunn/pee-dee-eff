@@ -59,7 +59,7 @@ function render(documentPath, options, callback){
         launchOptions.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
     }
 
-    var browserInstance = righto.sync(puppeteer.launch, launchOptions),
+    var browserInstance = righto.from(puppeteer.launch(launchOptions)),
         page = browserInstance.get(instance => instance.newPage()),
         loaded = righto(openUrl, page, uri),
         pdfPath = righto(savePDF, page, documentPath, options, righto.after(loaded)),
