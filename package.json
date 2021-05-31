@@ -11,7 +11,7 @@
   "dependencies": {
     "find-shallow-file": "^1.0.0",
     "fstream": "^1.0.11",
-    "puppeteer": "^1.2.0",
+    "puppeteer": "^3.0.0",
     "righto": "^5.0.0",
     "rimraf": "^2.5.4",
     "unzipper": "^0.8.9",
